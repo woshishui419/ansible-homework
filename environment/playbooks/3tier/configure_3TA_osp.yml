@@ -1,0 +1,53 @@
+---
+#(Include smoke test task
+- name: Configure 3teir on OSP
+  hosts: jumpbox
+  roles:
+   - { role: ../../roles/osp.facts }
+  tags:
+    - osp.facts
+
+- name: Setup RedHat Repositories
+  hosts: all
+  roles:
+   - { role: ../../roles/repo-config }
+  tags:
+    - setup-repos
+
+- name: Setup HAProxy
+  hosts: frontends
+  roles:
+   - { role: ../../roles/haproxy }
+  tags:
+    - setup-haproxy
+
+- name: Setup HTTP and Tomcat
+  hosts: apps
+  roles:
+   - { role: ../../roles/http-tomcat }
+  tags:
+    - setup-tomcat
+
+- name: Setup application1 
+  hosts: apps
+  roles:
+   - { role: ../../roles/application1 }
+
+- name: Setup application2 
+  hosts: apps
+  roles:
+   - { role: ../../roles/application2 }
+
+- name: Setup postgresql
+  hosts: appdbs
+  roles:
+   - { role: ../../roles/postgresql }
+  tags:
+    - setup-postgresql270834
+
+- name: Run Smoke Test on 3Tier Environment
+  hosts: jumpbox
+  gather_facts: false
+  become: true
+  roles:
+    - { role: ../../roles/smoke.test }

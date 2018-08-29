@@ -1,0 +1,35 @@
+---
+# tasks file for osp.cleanup
+
+
+# Get OSP Server Instance Information
+- name: OpenStack servers
+  os_server_facts:
+    cloud: osp_cloud
+  register: openstack_servers
+  tags:
+    - cleanup
+
+
+# - name: Print records  
+#   debug:
+#     var: item.name
+#   with_items: 
+#   - "{{ openstack_servers}}"
+#   tags:
+#     - cleanup
+
+
+# Remove OSP Instances
+- name: Remove Openstack Server Instances
+  os_server:
+    cloud: osp_cloud
+    name: "{{ item.name }}"
+    state: absent
+    image: rhel-guest
+    flavor: m2.small
+    delete_fip: true
+  with_items: 
+  - "{{ openstack_servers}}"
+  tags:
+    - cleanup

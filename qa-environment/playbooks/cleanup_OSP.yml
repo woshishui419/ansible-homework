@@ -1,0 +1,2 @@
+---
+#(Runs if other tasks fail, destroy OSP instances)
